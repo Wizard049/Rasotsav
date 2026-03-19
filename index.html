@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>🍽️ Rasotsav – Food Mela 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --orange:   #FF6B1A;
+    --orange-l: #FF8C42;
+    --yellow:   #FFD93D;
+    --red:      #E63946;
+    --cream:    #FFF8F0;
+    --white:    #FFFFFF;
+    --dark:     #1A0A00;
+    --muted:    #7A4F2E;
+    --card-bg:  #FFFFFF;
+    --shadow:   0 8px 32px rgba(230,57,70,.10);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── NAVBAR ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: linear-gradient(135deg, var(--red) 0%, var(--orange) 60%, var(--yellow) 100%);
+    padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 4px 20px rgba(230,57,70,.35);
+  }
+  .nav-brand {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.3rem; font-weight: 800;
+    color: #fff;
+    letter-spacing: .5px;
+    text-shadow: 0 2px 8px rgba(0,0,0,.2);
+  }
+  .nav-brand span { font-size: 1.5rem; }
+
+  .stall-count {
+    background: rgba(255,255,255,.25);
+    color: #fff;
+    font-size: .75rem; font-weight: 700;
+    padding: 4px 12px; border-radius: 50px;
+    letter-spacing: .5px;
+    backdrop-filter: blur(4px);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    background: linear-gradient(160deg, var(--red) 0%, var(--orange) 50%, var(--yellow) 100%);
+    padding: 56px 24px 80px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -2px; left: 0; right: 0; height: 48px;
+    background: var(--cream);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+  .hero-emoji {
+    font-size: 4rem;
+    display: block;
+    animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,.2));
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
+  }
+  .hero h1 {
+    font-family: 'Baloo 2', cursive;
+    font-size: clamp(2rem, 8vw, 3rem);
+    font-weight: 800; color: #fff;
+    margin: 12px 0 6px;
+    text-shadow: 0 4px 16px rgba(0,0,0,.2);
+    letter-spacing: -1px;
+  }
+  .hero p {
+    font-size: clamp(.9rem, 4vw, 1.05rem);
+    color: rgba(255,255,255,.92);
+    font-weight: 600; letter-spacing: .5px;
+    margin-bottom: 20px;
+  }
+  .badge {
+    display: inline-block;
+    background: rgba(255,255,255,.2);
+    backdrop-filter: blur(6px);
+    border: 1.5px solid rgba(255,255,255,.4);
+    color: #fff; font-size: .8rem; font-weight: 700;
+    padding: 6px 18px; border-radius: 50px;
+    letter-spacing: .8px;
+  }
+
+  /* floating blobs */
+  .blob {
+    position: absolute; border-radius: 50%;
+    opacity: .18; pointer-events: none;
+    animation: drift 8s ease-in-out infinite alternate;
+  }
+  .blob-1 { width: 160px; height: 160px; background: var(--yellow); top: -40px; left: -50px; animation-delay: 0s; }
+  .blob-2 { width: 100px; height: 100px; background: #fff; bottom: 40px; right: -20px; animation-delay: 2s; }
+  @keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(15px,15px) scale(1.1); } }
+
+
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.5rem; font-weight: 800;
+    padding: 8px 20px 4px;
+    color: var(--dark);
+  }
+  .section-title span { color: var(--orange); }
+
+  /* ── GRID ── */
+  .stalls-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    padding: 12px 16px 32px;
+  }
+
+  /* ── CARD ── */
+  .stall-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: transform .25s, box-shadow .25s;
+    animation: fadeUp .5s both;
+    position: relative;
+  }
+  .stall-card:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 16px 40px rgba(230,57,70,.18);
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .stall-card:nth-child(1)  { animation-delay: .05s; }
+  .stall-card:nth-child(2)  { animation-delay: .10s; }
+  .stall-card:nth-child(3)  { animation-delay: .15s; }
+  .stall-card:nth-child(4)  { animation-delay: .20s; }
+  .stall-card:nth-child(5)  { animation-delay: .25s; }
+  .stall-card:nth-child(6)  { animation-delay: .30s; }
+  .stall-card:nth-child(7)  { animation-delay: .35s; }
+  .stall-card:nth-child(8)  { animation-delay: .40s; }
+  .stall-card:nth-child(9)  { animation-delay: .45s; }
+
+  .card-header {
+    padding: 18px 18px 12px;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1.5px solid #FFF0E6;
+  }
+  .stall-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; flex-shrink: 0;
+  }
+  .stall-name {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.05rem; font-weight: 800;
+    color: var(--dark); line-height: 1.2;
+  }
+  .stall-tag {
+    font-size: .7rem; font-weight: 700;
+    color: var(--orange); letter-spacing: .6px;
+    text-transform: uppercase;
+  }
+
+  .items-list {
+    padding: 12px 18px 16px;
+    list-style: none;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .item-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px;
+  }
+  .item-name {
+    display: flex; align-items: center; gap: 7px;
+    font-size: .9rem; font-weight: 600; color: #3A2010;
+  }
+  .item-emoji { font-size: 1rem; }
+  .item-price {
+    font-family: 'Baloo 2', cursive;
+    font-size: .95rem; font-weight: 800;
+    color: var(--orange);
+    white-space: nowrap;
+    background: #FFF3E8;
+    padding: 2px 10px; border-radius: 50px;
+  }
+
+
+  /* ── NOTE BAR ── */
+  .note-bar {
+    margin: 0 16px 24px;
+    background: linear-gradient(135deg, #FFF3E8, #FFF8F0);
+    border-left: 4px solid var(--orange);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: .85rem; font-weight: 600; color: var(--muted);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: linear-gradient(135deg, var(--dark), #3A1A00);
+    color: rgba(255,255,255,.8);
+    text-align: center;
+    padding: 28px 20px;
+    font-size: .9rem; font-weight: 600;
+    line-height: 1.8;
+  }
+  footer strong { color: var(--yellow); font-family: 'Baloo 2', cursive; font-size: 1rem; }
+  footer .heart { color: var(--red); animation: beat .8s ease-in-out infinite alternate; display: inline-block; }
+  @keyframes beat { to { transform: scale(1.3); } }
+
+  /* ── BACK TO TOP ── */
+  #topBtn {
+    position: fixed; bottom: 24px; right: 20px;
+    background: linear-gradient(135deg, var(--red), var(--orange));
+    color: #fff; border: none; border-radius: 50%;
+    width: 46px; height: 46px; font-size: 1.3rem;
+    cursor: pointer; box-shadow: 0 4px 16px rgba(230,57,70,.4);
+    display: none; align-items: center; justify-content: center;
+    transition: transform .2s, opacity .2s;
+    z-index: 99;
+  }
+  #topBtn:hover { transform: scale(1.12); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 420px) {
+    .stalls-grid { grid-template-columns: 1fr; padding: 8px 12px 24px; }
+    .hero h1 { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand"><span>🍽️</span> Rasotsav</div>
+  <div class="stall-count">9 Stalls</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <span class="hero-emoji">🎪</span>
+  <h1>Rasotsav – Food Mela</h1>
+  <p>Scan • Explore • Enjoy Delicious Food</p>
+  <div class="badge">✨ Rasotsav 2026</div>
+</section>
+
+
+
+<!-- SECTION TITLE -->
+<div class="section-title">All <span>Stalls</span> 🏮</div>
+
+<!-- CARDS -->
+<div class="stalls-grid" id="stallsGrid">
+
+  <!-- Zayka Zone -->
+  <div class="stall-card" data-stall="zayka zone">
+    <div class="card-header">
+      <div class="stall-icon" style="background:#FFF0DC;">🥣</div>
+      <div>
+        <div class="stall-name">Zayka Zone</div>
+        <div class="stall-tag">Chaat & Drinks</div>
+      </div>
+    </div>
+    <ul class="items-list">
+      <li class="item-row" data-item="dahivada small">
+        <span class="item-name"><span class="item-emoji">🥛</span> Dahivada (Small)</span>
+        <span class="item-price">₹30</span>
+      </li>
+      <li class="item-row" data-item="dahivada regular">
+        <span class="item-name"><span class="item-emoji">🥛</span> Dahivada (Regular)</span>
+        <span class="item-price">₹50</span>
+      </li>
+      <li class="item-row" data-item="cold coco">
+        <span class="item-name"><span class="item-emoji">🥤</span> Cold Coco</span>
+        <span class="item-price">₹40</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Kudu -->
+  <div class="stall-card" data-stall="kudu">
+    <div class="card-header">
+      <div class="stall-icon" style="background:#FFF8DC;">☕</div>
+      <div>
+        <div class="stall-name">Kudu</div>
+        <div class="stall-tag">Snacks & Chai</div>
+      </div>
+    </div>
+    <ul class="items-list">
+      <li class="item-row" data-item="sev khamani">
+        <span class="item-name"><span class="item-emoji">🌾</span> Sev Khamani</span>
+        <span class="item-price">₹30</span>
+      </li>
+      <li class="item-row" data-item="chai">
+        <span class="item-name"><span class="item-emoji">☕</span> Chai</span>
+        <span class="item-price">₹10</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Gol Gappa Hub -->
+  <div class="stall-card" data-stall="gol gappa hub">
+    <div class="card-header">
+      <div class="stall-icon" style="background:#FFE8F0;">💦</div>
+      <div>
+        <div class="stall-name">Gol Gappa Hub</div>
+        <div class="stall-tag">Street Bites</div>
+      </div>
+    </div>
+    <ul class="items-list">
+      <li class="item-row" data-item="pani puri">
+        <span class="item-name"><span class="item-emoji">💧</span> Pani Puri</span>
+        <span class="item-price">₹20</span>
+      </li>
+      <li class="item-row" data-item="sev puri">
+        <span class="item-name"><span class="item-emoji">🌶️</span> Sev Puri</span>
+        <span class="item-price">₹20</span>
+      </li>
+      <li class="item-row" data-item="aam panna">
+        <span class="item-name"><span class="item-emoji">🥭</span> Aam Panna</span>
+        <span class="item-price">₹20</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Basket Hub -->
+  <div class="stall-card" data-stall="basket hub">
+    <div class="card-header">
+      <div class="stall-icon" style="background:#FFEFE0;">🧺</div>
+      <div>
+        <div class="stall-name">Basket Hub</div>
+        <div class="stall-tag">Signature Chaat</div>
+      </div>
+    </div>
+    <ul class="items-list">
+      <li class="item-row" data-item="basket puri">
+        <span class="item-name"><span class="item-emoji">🏺</span> Basket Puri</span>
+        <span class="item-price">₹40</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Campus Craving 1 -->
+  <div class="stall-card" data-stall="campus craving 1">
+    <div class="card-header">
+      <div class="stall-icon" style="background:#F0F8FF;">🎓</div>
+      <div>
+        <div class="stall-name">Campus Craving 1</div>
+        <div class="stall-tag">Student Special</div>
+      </div>
+    </div>
+    <ul class="items-list">
+      <li class="item-row" data-item="monaco stuffing">
+        <span class="item-name"><span class="item-emoji">🍪</span> Monaco Stuffing</span>
+        <span class="item-price">₹40</span>
+      </li>
+      <li class="item-row" data-item="kurkure chaat">
+        <span class="item-name"><span class="item-emoji">🌽</span> Kurkure Chaat</span>
+        <span class="item-price">₹40</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Campus Craving 2 -->
+  <div class="stall-card" data-stall="campus craving 2">
+    <div class="card-header">
+      <div class="stall-icon" style="background:#F0FFFA;">🎓</div>
+      <div>
+        <div class="stall-name">Campus Craving 2</div>
+        <div class="stall-tag">Sweet Treats</div>
+      </div>
+    </div>
+    <ul class="items-list">
+      <li class="item-row" data-item="ice cream">
+        <span class="item-name"><span class="item-emoji">🍨</span> Ice Cream</span>
+        <span class="item-price">₹40</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Alakhdani Cool Corner -->
+  <div class="stall-card" data-stall="alakhdani cool corner">
+    <div class="card-header">
+      <div class="stall-icon" style="background:#E8F4FF;">❄️</div>
+      <div>
+        <div class="stall-name">Alakhdani Cool Corner</div>
+        <div class="stall-tag">Refreshments</div>
+      </div>
+    </div>
+    <ul class="items-list">
+      <li class="item-row" data-item="chaas">
+        <span class="item-name"><span class="item-emoji">🥛</span> Chaas</span>
+        <span class="item-price">₹20</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Mohabaat Sharbat -->
+  <div class="stall-card" data-stall="mohabaat sharbat">
+    <div class="card-header">
+      <div class="stall-icon" style="background:#FFE8F5;">🌹</div>
+      <div>
+        <div class="stall-name">Mohabaat Sharbat</div>
+        <div class="stall-tag">Cool Sips</div>
+      </div>
+    </div>
+    <ul class="items-list">
+      <li class="item-row" data-item="rose sharbat">
+        <span class="item-name"><span class="item-emoji">🌹</span> Rose Sharbat</span>
+        <span class="item-price">₹40</span>
+      </li>
+      <li class="item-row" data-item="vanilla sharbat">
+        <span class="item-name"><span class="item-emoji">🍦</span> Vanilla Sharbat</span>
+        <span class="item-price">₹40</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Taste of Surat -->
+  <div class="stall-card" data-stall="taste of surat">
+    <div class="card-header">
+      <div class="stall-icon" style="background:#FFF5E0;">🏙️</div>
+      <div>
+        <div class="stall-name">Taste of Surat</div>
+        <div class="stall-tag">Surati Flavours</div>
+      </div>
+    </div>
+    <ul class="items-list">
+      <li class="item-row" data-item="aloo puri">
+        <span class="item-name"><span class="item-emoji">🥔</span> Aloo Puri</span>
+        <span class="item-price">₹20</span>
+      </li>
+      <li class="item-row" data-item="papdi aloo puri">
+        <span class="item-name"><span class="item-emoji">🫓</span> Papdi Aloo Puri</span>
+        <span class="item-price">₹30</span>
+      </li>
+      <li class="item-row" data-item="cheese aloo puri">
+        <span class="item-name"><span class="item-emoji">🧀</span> Cheese Aloo Puri</span>
+        <span class="item-price">₹40</span>
+      </li>
+      <li class="item-row" data-item="cheese papdi aloo puri">
+        <span class="item-name"><span class="item-emoji">🧀</span> Cheese Papdi Aloo Puri</span>
+        <span class="item-price">₹50</span>
+      </li>
+      <li class="item-row" data-item="nimbu soda">
+        <span class="item-name"><span class="item-emoji">🍋</span> Nimbu Soda</span>
+        <span class="item-price">₹20</span>
+      </li>
+    </ul>
+  </div>
+
+</div><!-- /grid -->
+
+
+<!-- NOTE BAR -->
+<div class="note-bar">
+  <span>👨‍🍳</span>
+  <span>All items are prepared by students with love and passion.</span>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>🍴 Enjoy the flavors of Rasotsav 2026 🍴</strong><br />
+  Made with <span class="heart">❤️</span> by students, for everyone.<br />
+  <small style="opacity:.6;font-size:.75rem;">© 2026 Rasotsav Food Mela</small>
+</footer>
+
+<!-- BACK TO TOP -->
+<button id="topBtn" title="Back to top" onclick="scrollToTop()">↑</button>
+
+<script>
+  const topBtn = document.getElementById('topBtn');
+
+  // back to top
+  window.addEventListener('scroll', () => {
+    topBtn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+  });
+
+  function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
